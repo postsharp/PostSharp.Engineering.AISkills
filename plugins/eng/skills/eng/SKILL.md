@@ -10,8 +10,6 @@ Git workflow conventions and commands for PostSharp/Metalama repositories.
 
 To make permanent changes, edit the source files under `X:\src\PostSharp.Engineering.AISkills\plugins\`, then run `/eng:update-cache` to update the local cache.
 
-For session-only fixes, edit the cached copy directly at `$env:USERPROFILE\.claude\plugins\cache\postsharp-engineering\eng\1.0.0\skills\eng.md`.
-
 ## Repository Info
 
 - **Organization**: `metalama` (GitHub) / `postsharp` (legacy)

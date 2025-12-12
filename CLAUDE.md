@@ -1,0 +1,3 @@
+- Before pushing, increase the version of all modified plugins:
+  - Update `version` in `plugins/<name>/.claude-plugin/plugin.json`
+  - Update matching `version` in `.claude-plugin/marketplace.json`
