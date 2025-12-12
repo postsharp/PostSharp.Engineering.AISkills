@@ -27,6 +27,17 @@ For session-only fixes, edit the cached copy directly at `$env:USERPROFILE\.clau
 - **Status field ID**: `PVTSSF_lADOC7gkgc4A030bzgqb1vQ`
 - **Status options**: Backlog (`f75ad846`), Planned (`08afe404`), In progress (`47fc9ee4`), In review (`4cc61d42`), Merged (`9d4ab054`), Done (`98236657`)
 
+## Commands to use
+
+Use the following commands or read their instructions on demand:
+
+- `/eng:create-pr`: create (prepare) a pull request
+- `/eng:fix-binlog-warnings`: analyze warnings from binlog output of `Build.ps1 build`
+- `/eng:prepare-release`: on demand, when user asks to prepare release, github release, release notes. typically done after deployment
+- `/eng:reflect`: self-improvement after a difficult task. you should do it automatically after a problem has been solved and you did mistakes before
+- `/eng:tc-build`: schedule a teamcity (TC, CI) build
+- `/eng:tc-check-build`: check the status of the last TC build
+
 ## Branch Strategy
 
 Each major version has two long-lived branches:
@@ -69,6 +80,10 @@ Suffix conventions:
 - `-preview` - Early preview releases
 - `-rc` - Release candidates
 - (no suffix) - Stable releases
+
+Never assign anything to a closed milestone.
+Never reopen a closed milestone.
+Propose the user to create a new milestone with incremented version number.
 
 ## Build System (Build.ps1)
 
@@ -166,9 +181,11 @@ When starting work on a GitHub issue:
 1. **Read issue details**: Fetch full issue content from GitHub
 2. **Check documentation**: Look for related conceptual docs
 3. **Create branch**: `topic/YYYY.N/XXXX-short-description`
-4. **Set issue status**: Mark as "In Progress" in the Development project, ensure assigned to user
-5. **Track progress**: Create `<issue-number>-TODO.md` file (don't commit it)
-6. **Discover bugs**: Create issues promptly when finding bugs during development
+4. **Assign issue**: Assign the issue to the user in GitHub
+5. **Set milestone**: Assign to the latest open milestone for the current YYYY.N version (e.g., `YYYY.N.B-maturity`)
+6. **Set issue status**: Mark as "In Progress" in the Development project
+7. **Track progress**: Create `<issue-number>-TODO.md` file (don't commit it)
+8. **Discover bugs**: Create issues promptly when finding bugs during development
 
 ## Critical Rules
 
