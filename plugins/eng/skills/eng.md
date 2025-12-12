@@ -8,13 +8,7 @@ Git workflow conventions and commands for PostSharp/Metalama repositories.
 
 ## Updating This Skill
 
-To make permanent changes, edit the source at `X:\src\PostSharp.Engineering.AISkills\plugins\eng\skills\eng.md`, then update the cache:
-
-```powershell
-Remove-Item -Recurse "$env:USERPROFILE\.claude\plugins\cache\postsharp-engineering" -ErrorAction SilentlyContinue
-Copy-Item -Recurse "X:\src\PostSharp.Engineering.AISkills\plugins\eng" "$env:USERPROFILE\.claude\plugins\cache\postsharp-engineering\eng\1.0.0"
-Copy-Item -Recurse "X:\src\PostSharp.Engineering.AISkills\plugins\metalama-dev" "$env:USERPROFILE\.claude\plugins\cache\postsharp-engineering\metalama-dev\1.0.0"
-```
+To make permanent changes, edit the source files under `X:\src\PostSharp.Engineering.AISkills\plugins\`, then run `/eng:update-cache` to update the local cache.
 
 For session-only fixes, edit the cached copy directly at `$env:USERPROFILE\.claude\plugins\cache\postsharp-engineering\eng\1.0.0\skills\eng.md`.
 
@@ -37,6 +31,7 @@ Use the following commands or read their instructions on demand:
 - `/eng:reflect`: self-improvement after a difficult task. you should do it automatically after a problem has been solved and you did mistakes before
 - `/eng:tc-build`: schedule a teamcity (TC, CI) build
 - `/eng:tc-check-build`: check the status of the last TC build
+- `/eng:update-cache`: update the local plugin cache from source
 
 ## Branch Strategy
 
