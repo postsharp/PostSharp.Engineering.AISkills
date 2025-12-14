@@ -211,7 +211,41 @@ Use the `/reflect` command after difficult tasks where you made many unsuccessfu
 - User corrections or feedback
 
 Learnings are added to `CLAUDE.md` or to the current plug-in files for future Claude instances to benefit from.
-## Metalama-Specific Rules
 
 
+## MCP Approval Server (Docker Support)
 
+When running Claude Code inside Docker containers (environmenr variable `RUNNING_IN_DOCKER` set ), certain operations require host-level access (git push, GitHub CLI, etc.). The MCP Approval Server provides a secure, human-in-the-loop workflow for these operations.
+
+### Architecture
+
+```
+┌─────────────────────────────────────────┐
+│ Docker Container                        │
+│  ┌─────────────┐                        │
+│  │ Claude Code │──▶ MCP Client         │
+│  └─────────────┘    (execute_command)   │
+└──────────────────────┬──────────────────┘
+                       │ HTTP/SSE
+                       ▼
+┌─────────────────────────────────────────┐
+│ Host: MCP Approval Server               │
+│  1. Receive request                     │
+│  2. AI risk analysis (Claude CLI)       │
+│  3. Auto-approve/reject or prompt user  │
+│  4. Execute if approved                 │
+│  5. Return result                       │
+└─────────────────────────────────────────┘
+```
+
+The MCP server starts automatically with `DockerBuild.ps1 -Claude`. To disable:
+
+```powershell
+.\DockerBuild.ps1 -Claude -NoMcp
+```
+
+Inside the container, privileged commands are routed through the MCP server automatically via the `host-approval` MCP configuration.
+
+### Supported Operations
+
+Any powershell command is allowed.
