@@ -215,7 +215,7 @@ Learnings are added to `CLAUDE.md` or to the current plug-in files for future Cl
 
 ## MCP Approval Server (Docker Support)
 
-When running Claude Code inside Docker containers (environmenr variable `RUNNING_IN_DOCKER` set ), certain operations require host-level access (git push, GitHub CLI, etc.). The MCP Approval Server provides a secure, human-in-the-loop workflow for these operations.
+When running Claude Code inside Docker containers (environment variable `RUNNING_IN_DOCKER` set ), certain operations require host-level access (git push, GitHub CLI, etc.). The MCP Approval Server provides a secure, human-in-the-loop workflow for these operations.
 
 ### Architecture
 
