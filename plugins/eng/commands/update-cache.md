@@ -1,5 +1,7 @@
 ---
 description: Update the local Claude plugin cache from source
+allowed-tools:
+  - Bash
 ---
 
 # Update Plugin Cache
