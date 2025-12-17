@@ -1,6 +1,9 @@
 ---
 description: Check the status of a TeamCity build
 argument-hint: "<buildId> [continuous]"
+allowed-tools:
+  - Bash
+  - Read
 ---
 
 # Check TeamCity Build Status
@@ -23,23 +26,44 @@ If argument is a build ID (numeric), use it directly. Otherwise:
 3. Construct build type ID: `<Prefix>_DebugBuild` (e.g., `Metalama_Metalama20260_Metalama_DebugBuild`)
 4. Query latest build using the API
 
-### 2. Query Build Status
+### 2. Authentication Context
+
+Check `RUNNING_IN_DOCKER` environment variable to determine authentication method:
+
+**When running in Docker** (`RUNNING_IN_DOCKER=true`):
+- TeamCity API calls may require MCP authorization
+- Claude will prompt for authorization when needed
+- Use PowerShell `Invoke-RestMethod` for API calls
+
+**When running on host** (`RUNNING_IN_DOCKER` not set or false):
+- Use `TEAMCITY_CLOUD_TOKEN` environment variable for authentication
+- Use PowerShell `Invoke-RestMethod` for API calls
+
+### 3. Query Build Status Using PowerShell
 
 **Get Specific Build by ID:**
-```bash
-curl -H "Authorization: Bearer $TEAMCITY_CLOUD_TOKEN" \
-     -H "Accept: application/json" \
-     "https://postsharp.teamcity.com/app/rest/builds/id:<buildId>"
+```powershell
+$build = Invoke-RestMethod -Method GET `
+    -Uri "https://postsharp.teamcity.com/app/rest/builds/id:$buildId" `
+    -Headers @{
+        "Authorization" = "Bearer $env:TEAMCITY_CLOUD_TOKEN"
+        "Accept" = "application/json"
+    }
 ```
 
 **Get Latest Build for Branch/BuildType:**
-```bash
-curl -H "Authorization: Bearer $TEAMCITY_CLOUD_TOKEN" \
-     -H "Accept: application/json" \
-     "https://postsharp.teamcity.com/app/rest/builds?locator=buildType:<buildTypeId>,branch:<branchName>,count:1"
+```powershell
+$builds = Invoke-RestMethod -Method GET `
+    -Uri "https://postsharp.teamcity.com/app/rest/builds?locator=buildType:$buildTypeId,branch:$branchName,count:1" `
+    -Headers @{
+        "Authorization" = "Bearer $env:TEAMCITY_CLOUD_TOKEN"
+        "Accept" = "application/json"
+    }
+
+$build = $builds.build[0]
 ```
 
-### 3. Parse and Display Results
+### 4. Parse and Display Results
 
 **Key Fields in Response:**
 
@@ -58,7 +82,7 @@ curl -H "Authorization: Bearer $TEAMCITY_CLOUD_TOKEN" \
 | `agent.name` | Build agent | Agent name |
 | `problemOccurrences.count` | Number of problems | Numeric |
 
-### 4. Display Build Status
+### 5. Display Build Status
 
 **Format output as:**
 ```
@@ -76,7 +100,7 @@ Problems: <problemOccurrences.count>
 URL: <webUrl>
 ```
 
-### 5. Handle Running Builds
+### 6. Handle Running Builds
 
 If `state == "running"`:
 - Display "Build is still running"
@@ -84,13 +108,16 @@ If `state == "running"`:
 - Optionally poll every 30 seconds with `--wait` flag
 - Use `finishDate == null` to detect running state
 
-### 6. Get Problem Details (Optional)
+### 7. Get Problem Details (Optional)
 
-If `problemOccurrences.count > 0`, fetch details:
-```bash
-curl -H "Authorization: Bearer $TEAMCITY_CLOUD_TOKEN" \
-     -H "Accept: application/json" \
-     "https://postsharp.teamcity.com/app/rest/problemOccurrences?locator=build:(id:<buildId>)"
+If `problemOccurrences.count > 0`, fetch details using PowerShell:
+```powershell
+$problems = Invoke-RestMethod -Method GET `
+    -Uri "https://postsharp.teamcity.com/app/rest/problemOccurrences?locator=build:(id:$buildId)" `
+    -Headers @{
+        "Authorization" = "Bearer $env:TEAMCITY_CLOUD_TOKEN"
+        "Accept" = "application/json"
+    }
 ```
 
 **Problem fields:**
@@ -98,7 +125,7 @@ curl -H "Authorization: Bearer $TEAMCITY_CLOUD_TOKEN" \
 - `identity`: Step that failed
 - `details`: Additional information
 
-### 7. Get Test Results
+### 8. Get Test Results
 
 **Test Summary in Build Response:**
 
@@ -114,24 +141,33 @@ The build response includes a `testOccurrences` field with summary:
 ```
 
 **Get All Test Results:**
-```bash
-curl -H "Authorization: Bearer $TEAMCITY_CLOUD_TOKEN" \
-     -H "Accept: application/json" \
-     "https://postsharp.teamcity.com/app/rest/testOccurrences?locator=build:(id:<buildId>)"
+```powershell
+$tests = Invoke-RestMethod -Method GET `
+    -Uri "https://postsharp.teamcity.com/app/rest/testOccurrences?locator=build:(id:$buildId)" `
+    -Headers @{
+        "Authorization" = "Bearer $env:TEAMCITY_CLOUD_TOKEN"
+        "Accept" = "application/json"
+    }
 ```
 
 **Get Failed Tests Only:**
-```bash
-curl -H "Authorization: Bearer $TEAMCITY_CLOUD_TOKEN" \
-     -H "Accept: application/json" \
-     "https://postsharp.teamcity.com/app/rest/testOccurrences?locator=build:(id:<buildId>),status:FAILURE"
+```powershell
+$failedTests = Invoke-RestMethod -Method GET `
+    -Uri "https://postsharp.teamcity.com/app/rest/testOccurrences?locator=build:(id:$buildId),status:FAILURE" `
+    -Headers @{
+        "Authorization" = "Bearer $env:TEAMCITY_CLOUD_TOKEN"
+        "Accept" = "application/json"
+    }
 ```
 
 **Get Detailed Test Information:**
-```bash
-curl -H "Authorization: Bearer $TEAMCITY_CLOUD_TOKEN" \
-     -H "Accept: application/json" \
-     "https://postsharp.teamcity.com/app/rest/testOccurrences/build:(id:<buildId>),id:<testId>"
+```powershell
+$testDetail = Invoke-RestMethod -Method GET `
+    -Uri "https://postsharp.teamcity.com/app/rest/testOccurrences/build:(id:$buildId),id:$testId" `
+    -Headers @{
+        "Authorization" = "Bearer $env:TEAMCITY_CLOUD_TOKEN"
+        "Accept" = "application/json"
+    }
 ```
 
 **Test Occurrence Fields:**
@@ -254,7 +290,13 @@ Write-Host "URL: $($build.webUrl)" -ForegroundColor Cyan
 
 ## Error Handling
 
-- If `TEAMCITY_CLOUD_TOKEN` not set, display error
-- If build ID not found, API returns 404
-- If branch has no builds, API returns empty array
-- Invalid locator syntax returns 400 with error details
+**Authentication Errors:**
+- When running on host: If `TEAMCITY_CLOUD_TOKEN` not set, display error message
+- When running in Docker: If MCP authorization fails or is denied, display error message
+- Check `RUNNING_IN_DOCKER` environment variable to provide appropriate error context
+
+**API Errors:**
+- If build ID not found, API returns 404 - display "Build not found"
+- If branch has no builds, API returns empty array - display "No builds found for this branch"
+- Invalid locator syntax returns 400 with error details - display the error message
+- Network errors should be caught and displayed clearly

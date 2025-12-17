@@ -65,6 +65,15 @@ Examples:
 - `Fix cache invalidation on timeout (#1234)`
 - `Add retry logic for API calls (#5678)`
 
+## Committing Changes
+
+**IMPORTANT RULE**: Unless the user explicitly asks you to commit, you MUST:
+1. Ask the user to review the changes (they will review in their IDE)
+2. Wait for explicit approval before committing
+3. **Never commit autonomously** without user approval
+
+This ensures the user maintains control over what gets committed to the repository.
+
 ## Milestone Format
 
 Always use `YYYY.N.B-suffix` format (e.g., `2026.0.8-rc`), never `YYYY.N` alone.
