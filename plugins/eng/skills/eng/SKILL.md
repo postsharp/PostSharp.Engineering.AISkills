@@ -212,7 +212,7 @@ When starting work on a GitHub issue:
 - 
 ## AI Continuous Improvement
 
-Use the `/reflect` command after difficult tasks where you made many unsuccessful attempts. This captures learnings for future sessions:
+Use the `/eng:reflect` command after difficult tasks where you made many unsuccessful attempts. This captures learnings for future sessions:
 
 - Mistakes made and how they were resolved
 - Patterns that worked well

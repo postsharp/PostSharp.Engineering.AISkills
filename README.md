@@ -49,12 +49,12 @@ PostSharp/Metalama engineering workflows:
 
 | Command | Description |
 |---------|-------------|
-| `/create-pr` | Create PR with metadata, milestone, issue linking |
-| `/prepare-release` | Prepare GitHub release for a milestone |
-| `/tc-build` | Trigger TeamCity build |
-| `/tc-check-build` | Check TeamCity build status |
-| `/fix-binlog-warnings` | Fix compiler warnings from MSBuild binlog files |
-| `/reflect` | Review session and capture learnings |
+| `/eng:create-pr` | Create PR with metadata, milestone, issue linking |
+| `/eng:prepare-release` | Prepare GitHub release for a milestone |
+| `/eng:tc-build` | Trigger TeamCity build |
+| `/eng:tc-check-build` | Check TeamCity build status |
+| `/eng:fix-binlog-warnings` | Fix compiler warnings from MSBuild binlog files |
+| `/eng:reflect` | Review session and capture learnings |
 
 ### Skills
 

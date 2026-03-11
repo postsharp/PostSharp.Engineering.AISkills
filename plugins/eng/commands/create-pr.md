@@ -73,7 +73,7 @@ $ARGUMENTS - Optional issue numbers to close (e.g., `1234 1235`)
    gh api graphql -f query="mutation { updateProjectV2ItemFieldValue(input: { projectId: \"PVT_kwDOC7gkgc4A030b\" itemId: \"$ITEM_ID\" fieldId: \"PVTSSF_lADOC7gkgc4A030bzgqb1vQ\" value: { singleSelectOptionId: \"4cc61d42\" } }) { projectV2Item { id } } }"
    ```
 
-8. **Trigger TeamCity build**: Use `/tc-build` or ask user.
+8. **Trigger TeamCity build**: Use `/eng:tc-build` or ask user.
 
 ## Error Handling
 
